@@ -30,12 +30,18 @@
         _locationManager = [[CLLocationManager alloc] init];
         _locationManager.delegate = self;
     }
-    
     CLLocationAccuracy accuracy = [self clValue:_locationOptions.accuracy];
     CLLocationDistance distanceFilter = _locationOptions.distanceFilter;
-    
+    _locationManager.pausesLocationUpdatesAutomatically = false;
     _locationManager.desiredAccuracy = accuracy;
     _locationManager.distanceFilter = distanceFilter;
+    if (@available(iOS 9.0, *)) {
+        _locationManager.allowsBackgroundLocationUpdates = true;
+    } else {
+        // Fallback on earlier versions
+    }
+    _locationManager.activityType = CLActivityTypeFitness;
+
 }
 
 - (void)stopTask {
@@ -43,7 +49,7 @@
         [_locationManager stopUpdatingLocation];
         _locationManager = nil;
     }
-    
+
     [super stopTask];
 }
 
